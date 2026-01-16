@@ -1,18 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pokepedia</title>
-    <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg">
-    <link rel ="stylesheet" href="pokedex.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml"
+        href="https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg">
+    <link rel="stylesheet" href="pokedex.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <h1 class ="class-heading"> POKEPEDIA </h1>
+    <h1><a href="index.html " class="class-heading">POKEPEDIA</a> </h1>
+    <div id="control-panel">
+        <div class="gen-btn">
+            <button onclick="fetchpokemon(1,151)">Gen 1</button>
+            <button onclick="fetchpokemon(152,251)">Gen 2</button>
+            <button onclick="fetchpokemon(252,386)">Gen 3</button>
+            <button onclick="fetchpokemon(387,493)">Gen 4</button>
+            <button onclick="fetchpokemon(494,649)">Gen 5</button>
+            <button onclick="fetchpokemon(650,721)">Gen 6</button>
+            <button onclick="fetchpokemon(722,809)">Gen 7</button>
+            <button onclick="fetchpokemon(810,905)">Gen 8</button>
+            <button onclick="fetchpokemon(906,1025)">Gen 9</button>
+        </div>
+
+
+        <button class="item-btn" onclick="fetchItems()">🎒 Show Items 🎒</button>
+        <button class="shiny-btn" onclick="toggleShiny()">✨ Shiny Mode ✨</button>
+        
+
+    </div>
+    </div>
     <input type="text" id="searchbar" placeholder="search for a pokemon ...">
     <ul id="pokedex"></ul>
-    <script src="pokedex.js" ></script>
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+
+            <div class="modal-header">
+                <img id="modal-img" src="" alt="">
+                <div>
+                    <h2 id="modal-name"></h2>
+                    <button id="play-cry-btn" class="cry-btn">🔊 Play Cry</button>
+                    <div id="modal-types"></div>
+                    <p id="modal-height-weight"></p>
+                </div>
+            </div>
+
+            <div class="modal-stats">
+                <h3>Base Stats</h3>
+                <div id="modal-stats-content"></div>
+            </div>
+
+            <div class="modal-evolutions">
+                <h3>Evolution Chain</h3>
+                <div id="evolution-chain" class="evo-flex"></div>
+            </div>
+        </div>
+    </div>
+    <script src="pokedex.js"></script>
 </body>
+
 </html>
