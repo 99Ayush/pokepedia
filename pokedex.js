@@ -234,4 +234,5 @@ const displaypokemon = (pokemonlist) => {
     pokedex.innerHTML = pokemonhtmlstring;
 };
 
-fetchpokemon(1, 151);
+fetchpokemon(1, 51);
+
