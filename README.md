@@ -2,7 +2,7 @@
 
 A dynamic Pokedex web application built with vanilla JavaScript and the PokeAPI.
 
-🚀 **[View Live Demo](https://99Ayush.github.io/pokedex/)**
+🚀 **[View Live Demo](https://pokepedia-tan.vercel.app/)**
 
 ### Key Features
 * **Search:** Find Pokémon by name or ID.
