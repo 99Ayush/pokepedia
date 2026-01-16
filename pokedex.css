@@ -1,0 +1,91 @@
+body {
+    background-color: orangered;
+    margin:0px;
+}
+#pokedex{
+    padding-inline-start: 30px;
+    padding-inline-end: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 30px;
+}
+.class-heading {
+    font-family:'press start 2P ',cursive;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 2px;
+    font-size: 35px;
+    font-style: italic;
+    color: #FFCB05;
+    text-shadow: 
+        3px 3px 0 #3c5aa6,
+        -1px -1px 0 #3c5aa6,  
+        1px -1px 0 #3c5aa6,
+        -1px 1px 0 #3c5aa6,
+        1px 1px 0 #3c5aa6;
+        font-size: 2.5rem;
+    
+}
+.class-heading:hover{
+    transform: translate(-4px);
+    
+}
+.card {
+    list-style: none;
+    background-color: white;
+    color: #222; 
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1); 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+.card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+}
+.card-image {
+    height: 160px; 
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); 
+}
+.card h2 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    text-transform: capitalize; 
+    color: #333;
+}
+.card p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6; 
+}
+.class-title{
+  font-family: 'orbitron',sans-serif ;
+  text-align:center;
+  font-size: 3rem;
+}
+.class-content{
+  font-family: 'Rubik', sans-serif;
+}
+#searchbar{
+   display:block;
+   margin-left:auto;
+   margin-right: auto;
+   margin-bottom: 30px;
+   width: 60%;
+   max-width: 500px;
+   padding: 15px;
+   border-radius: 30px;
+   border: 2px solid #ddd;
+   font-family: 'Rubik',sans-serif;
+   font-size: 1.1rem;
+   outline: none;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+#searchBar:focus{
+    border-color: #ef5350;
+    box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+}
