@@ -1,3 +1,12 @@
+const pokedex = document.getElementById('pokedex');
+const searchbar = document.getElementById('searchbar');
+let pokemon = [];
+let allGenData = [];
+let isShinyMode = false;
+
+
+let isItemMode = false; 
+let loadedItems = [];
 const showLoading = () => {
     const loadingHTML = `
         <div class="loader-container">
@@ -242,6 +251,7 @@ const displaypokemon = (pokemonlist) => {
 };
 
 fetchpokemon(1, 51);
+
 
 
 
