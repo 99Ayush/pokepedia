@@ -2,7 +2,34 @@ body {
     background-color: orangered;
     margin: 0px;
 }
+/* --- LOADING ANIMATION --- */
+.loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
 
+.running-pika {
+    width: 100px; /* Adjust size */
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
 #pokedex {
     padding-inline-start: 30px;
     padding-inline-end: 30px;
@@ -303,3 +330,4 @@ body {
 .cry-btn:active {
     transform: scale(0.95);
 }
+
