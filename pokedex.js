@@ -16,6 +16,33 @@ const showLoading = () => {
     `;
     pokedex.innerHTML = loadingHTML;
 };
+const fetchpokemon = (start, end) => {
+    isItemMode = false;
+    pokemon = [];
+    showLoading();
+
+    const promises = [];
+    for (let i = start; i <= end; i++) {
+        const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
+        promises.push(fetch(url).then((res) => res.json()));
+    };
+
+    Promise.all(promises).then((results) => {
+        pokemon = results.map((data) => ({
+            name: data.name,
+            id: data.id,
+            base_experience: data.base_experience,
+            weight: `${data.weight / 10} kg`,
+            height: `${data.height / 10} m`,
+            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+            shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
+            stat: data.stats.map((stat) => `${stat.stat.name}: ${stat.base_stat}`).join(', '),
+            type: data.types.map((type) => type.type.name).join(', '),
+            abilities: data.abilities.map((abilities) => abilities.ability.name).join(', ')
+        }));
+        displaypokemon(pokemon);
+    });
+};
 
 const initGlobalSearch = async () => {
     const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
@@ -69,33 +96,6 @@ searchbar.addEventListener('keyup', (e) => {
     }, 500);
 });
 
-const fetchpokemon = (start, end) => {
-    isItemMode = false;
-    pokemon = [];
-    showLoading();
-
-    const promises = [];
-    for (let i = start; i <= end; i++) {
-        const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
-        promises.push(fetch(url).then((res) => res.json()));
-    };
-
-    Promise.all(promises).then((results) => {
-        pokemon = results.map((data) => ({
-            name: data.name,
-            id: data.id,
-            base_experience: data.base_experience,
-            weight: `${data.weight / 10} kg`,
-            height: `${data.height / 10} m`,
-            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
-            shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
-            stat: data.stats.map((stat) => `${stat.stat.name}: ${stat.base_stat}`).join(', '),
-            type: data.types.map((type) => type.type.name).join(', '),
-            abilities: data.abilities.map((abilities) => abilities.ability.name).join(', ')
-        }));
-        displaypokemon(pokemon);
-    });
-};
 
 const genbuttons = document.querySelectorAll('.gen-btn button');
 genbuttons.forEach(button => {
@@ -248,5 +248,6 @@ const displaypokemon = (pokemonlist) => {
 };
 
 fetchpokemon(1, 51);
+
 
 
