@@ -52,7 +52,7 @@ searchbar.addEventListener('keyup', (e) => {
 const fetchpokemon = (start, end) => {
     isItemMode = false;
     pokemon = [];
-    pokedex.innerHTML = `<h2 style ="color:white; text-align:center;">Loading...</h2>`;
+   showLoading();
     const promises = [];
     for (let i = start; i <= end; i++) {
         const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
@@ -174,7 +174,7 @@ window.onclick = (event) => {
 const fetchItems = () => {
 
     pokemon = [];
-    pokedex.innerHTML = '<h2 style="color:white; text-align:center;">Rummaging through bag...</h2>';
+   showLoading();
 
     const promises = [];
 
@@ -243,5 +243,6 @@ const displaypokemon = (pokemonlist) => {
 };
 
 fetchpokemon(1, 51);
+
 
 
