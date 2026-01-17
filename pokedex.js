@@ -9,7 +9,7 @@ let loadedItems = [];
 const showLoading = () => {
     const loadingHTML = `
         <div class="loader-container">
-            <img src="https://media.tenor.com/fSsxSHCuJyMAAAAi/pikachu-running.gif" class="running-pika" alt="Loading...">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/25.gif" class="running-pika" alt="Loading...">
         </div>
     `;
     pokedex.innerHTML = loadingHTML;
@@ -249,3 +249,4 @@ const displaypokemon = (pokemonlist) => {
 };
 
 fetchpokemon(1, 51);
+
