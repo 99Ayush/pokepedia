@@ -25,36 +25,57 @@ let isShinyMode = false;
 const initGlobalSearch = async () => {
     const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
     const data = await res.json();
-    allGenData = data.results; // 
+    allGenData = data.results;  
 };
 
 initGlobalSearch();
 searchbar.addEventListener('keyup', (e) => {
     const searchString = e.target.value.toLowerCase();
-    if (searchString === '') {
-        fetchpokemon(1, 151);
+
+   
+    if (typeof isItemMode !== 'undefined' && isItemMode) {
+       
+        if(typeof loadedItems !== 'undefined') {
+            const filteredItems = loadedItems.filter(item => 
+                item.name.toLowerCase().includes(searchString)
+            );
+            displayItems(filteredItems);
+        }
+        return; 
+    }
+
+  
+    if(searchString === '') {
+        fetchpokemon(1, 50);
         return;
     }
-    const matchNames = allGenData.filter(p => p.name.includes(searchString));
-    const topMatches = matchNames.slice(0, 10);
-    const promises = topMatches.map(match => fetch(match.url).then(res => res.json()));
-    Promise.all(promises).then((results) => {
 
-        const searchResults = results.map((data) => ({
-            name: data.name,
-            id: data.id,
-            base_experience: data.base_experience,
-            weight: `${data.weight / 10} kg`,
-            height: `${data.height / 10} m`,
-            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default
-                || 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png',
-            stat: data.stats.map((s) => `${s.stat.name}: ${s.base_stat}`).join(', '),
-            type: data.types.map((t) => t.type.name).join(', '),
-            abilities: data.abilities.map((a) => a.ability.name).join(', ')
-        }));
+    showLoading();
 
-        displaypokemon(searchResults);
-    });
+    
+    setTimeout(() => {
+        const matchNames = allGenData.filter(p => p.name.includes(searchString));
+        const topMatches = matchNames.slice(0, 10);
+
+        const promises = topMatches.map(match => fetch(match.url).then(res => res.json()));
+
+        Promise.all(promises).then((results) => {
+            const searchResults = results.map((data) => ({
+                name: data.name,
+                id: data.id,
+                base_experience: data.base_experience,
+                weight: `${data.weight / 10} kg`,
+                height: `${data.height / 10} m`,
+                image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+                shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
+                stat: data.stats.map((s) => `${s.stat.name}: ${s.base_stat}`).join(', '),
+                type: data.types.map((t) => t.type.name).join(', '),
+                abilities: data.abilities.map((a) => a.ability.name).join(', ')
+            }));
+            
+            displaypokemon(searchResults);
+        });
+    }, 500); // 0.5s delay
 });
 
 const fetchpokemon = (start, end) => {
@@ -251,6 +272,7 @@ const displaypokemon = (pokemonlist) => {
 };
 
 fetchpokemon(1, 51);
+
 
 
 
