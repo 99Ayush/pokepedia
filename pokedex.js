@@ -1,4 +1,12 @@
-
+const showLoading = () => {
+    const loadingHTML = `
+        <div class="loader-container">
+            <img src="https://media.tenor.com/fSsxSHCuJyMAAAAi/pikachu-running.gif" class="running-pika" alt="Pikachu Running">
+            <h2 class="loading-text">Catching Pokémon...</h2>
+        </div>
+    `;
+    pokedex.innerHTML = loadingHTML;
+};
 const pokedex = document.getElementById('pokedex');
 const searchbar = document.getElementById('searchbar');
 let pokemon = [];
@@ -235,4 +243,5 @@ const displaypokemon = (pokemonlist) => {
 };
 
 fetchpokemon(1, 51);
+
 
