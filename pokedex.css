@@ -2,7 +2,7 @@ body {
     background-color: orangered;
     margin: 0px;
 }
-/* --- LOADING ANIMATION --- */
+
 .loader-container {
     display: flex;
     flex-direction: column;
@@ -12,7 +12,7 @@ body {
 }
 
 .running-pika {
-    width: 100px; /* Adjust size */
+    width: 150px;
     height: auto;
     margin-bottom: 20px;
 }
@@ -330,4 +330,5 @@ body {
 .cry-btn:active {
     transform: scale(0.95);
 }
+
 
