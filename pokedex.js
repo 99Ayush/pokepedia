@@ -1,280 +1,333 @@
-const pokedex = document.getElementById('pokedex');
-const searchbar = document.getElementById('searchbar');
-let pokemon = [];
-let allGenData = [];
-let isShinyMode = false;
+body {
+    background-color: orangered;
+    margin: 0px;
+}
 
+.loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
 
-let isItemMode = false; 
-let loadedItems = [];
-const showLoading = () => {
-    const loadingHTML = `
-        <div class="loader-container">
-            <img src="https://media.tenor.com/fSsxSHCuJyMAAAAi/pikachu-running.gif" class="running-pika" alt="Loading...">
-        </div>
-    `;
-    pokedex.innerHTML = loadingHTML;
-};
-const pokedex = document.getElementById('pokedex');
-const searchbar = document.getElementById('searchbar');
-let pokemon = [];
-let allGenData = [];
-let isShinyMode = false;
+.running-pika {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+}
 
+.loading-text {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    animation: blink 1.5s infinite;
+}
 
-const initGlobalSearch = async () => {
-    const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
-    const data = await res.json();
-    allGenData = data.results;  
-};
+@keyframes blink {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+#pokedex {
+    padding-inline-start: 30px;
+    padding-inline-end: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
 
-initGlobalSearch();
-searchbar.addEventListener('keyup', (e) => {
-    const searchString = e.target.value.toLowerCase();
+.class-heading {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    font-family: 'press start 2P ', cursive;
+    cursor: pointer;
+    letter-spacing: 6px;
+    font-style: italic;
+    font-size: 4rem;
+    color: #FFCB05;
+    text-shadow:
+        3px 3px 0 #3c5aa6,
+        -1px -1px 0 #3c5aa6,
+        1px -1px 0 #3c5aa6,
+        -1px 1px 0 #3c5aa6,
+        1px 1px 0 #3c5aa6;
+    margin: 0 auto;
 
-   
-    if (typeof isItemMode !== 'undefined' && isItemMode) {
-       
-        if(typeof loadedItems !== 'undefined') {
-            const filteredItems = loadedItems.filter(item => 
-                item.name.toLowerCase().includes(searchString)
-            );
-            displayItems(filteredItems);
-        }
-        return; 
-    }
+    text-decoration: none;
 
-  
-    if(searchString === '') {
-        fetchpokemon(1, 50);
-        return;
-    }
-
-    showLoading();
-
-    
-    setTimeout(() => {
-        const matchNames = allGenData.filter(p => p.name.includes(searchString));
-        const topMatches = matchNames.slice(0, 10);
-
-        const promises = topMatches.map(match => fetch(match.url).then(res => res.json()));
-
-        Promise.all(promises).then((results) => {
-            const searchResults = results.map((data) => ({
-                name: data.name,
-                id: data.id,
-                base_experience: data.base_experience,
-                weight: `${data.weight / 10} kg`,
-                height: `${data.height / 10} m`,
-                image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
-                shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
-                stat: data.stats.map((s) => `${s.stat.name}: ${s.base_stat}`).join(', '),
-                type: data.types.map((t) => t.type.name).join(', '),
-                abilities: data.abilities.map((a) => a.ability.name).join(', ')
-            }));
-            
-            displaypokemon(searchResults);
-        });
-    }, 500); // 0.5s delay
-});
-
-const fetchpokemon = (start, end) => {
-    isItemMode = false;
-    pokemon = [];
-   showLoading();
-    const promises = [];
-    for (let i = start; i <= end; i++) {
-        const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
-        promises.push(fetch(url).then((res) => res.json()));
-    };
-    Promise.all(promises).then((results) => {
-
-        pokemon = results.map((data) => ({
-            name: data.name,
-            id: data.id,
-            base_experience: data.base_experience,
-            weight: `${data.weight / 10} kg`,
-            height: `${data.height / 10} m`,
-            image: data.sprites.other['official-artwork'].front_default,
-            shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
-            stat: data.stats.map((stat) => `${stat.stat.name}: ${stat.base_stat}`).join(', '),
-            type: data.types.map((type) => type.type.name).join(', '),
-            abilities: data.abilities.map((abilities) => abilities.ability.name).join(', ')
-        }));
-        displaypokemon(pokemon);
-    });
-};
-
-
-
-
-
-const genbuttons = document.querySelectorAll('.gen-btn button');
-genbuttons.forEach(button => {
-    button.addEventListener('click', function () {
-        genbuttons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-    });
-
-});
-if (genbuttons.length > 0) {
-    genbuttons[0].classList.add('active');
 
 }
-const modal = document.getElementById('modal');
-const openModal = async (id) => {
 
-    modal.classList.add('visible');
-    document.getElementById('modal-name').innerText = "Loading...";
-    document.getElementById('modal-img').src = "";
-    document.getElementById('modal-stats-content').innerHTML = "";
-    document.getElementById('evolution-chain').innerHTML = "";
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    const data = await res.json();
-    const modalImage = (typeof isShinyMode !== 'undefined' && isShinyMode && data.sprites.other['official-artwork'].front_shiny)
-        ? data.sprites.other['official-artwork'].front_shiny
-        : data.sprites.other['official-artwork'].front_default;
+.class-heading:active {
+    transform: scale(0.95);
+}
 
-    document.getElementById('modal-img').src = data.sprites.other['official-artwork'].front_default;
-    document.getElementById('modal-name').innerText = data.name;
-    document.getElementById('modal-height-weight').innerText = `Height: ${data.height / 10}m | Weight: ${data.weight / 10}kg`;
+.card {
+    list-style: none;
+    background-color: white;
+    color: #222;
+    font-weight: bolder;
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 
-    const cryURL = data.cries.latest;
-    if (cryURL) {
-        const audio = new Audio(cryURL);
-        audio.volume = 0.2;
-        audio.play();
-        document.getElementById('play-cry-btn').onclick = () => {
-            audio.play();
-        };
-        document.getElementById('play-cry-btn').style.display = "inline-block";
-    } else {
-        document.getElementById('play-cry-btn').style.display = "none";
-    }
-    const statsHTML = data.stats.map(s =>
-        `<p>${s.stat.name}: <b>${s.base_stat}</b></p>`
-    ).join('');
-    document.getElementById('modal-stats-content').innerHTML = statsHTML;
+}
 
-    const speciesRes = await fetch(data.species.url);
-    const speciesData = await speciesRes.json();
+.card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
 
-    const evoRes = await fetch(speciesData.evolution_chain.url);
-    const evoData = await evoRes.json();
+.card-image {
+    height: 160px;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
+}
 
+.card h2 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    text-transform: capitalize;
+    color: #333;
+}
 
-    let evoHTML = '';
-    let current = evoData.chain;
+.card p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
 
+.class-title {
+    font-family: 'orbitron', sans-serif;
+    text-align: center;
+    font-size: 3rem;
+}
 
-    do {
-        const evoName = current.species.name;
+.class-content {
+    font-family: 'Rubik', sans-serif;
+}
 
-        const evoId = current.species.url.split('/')[6];
-        const evoImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${evoId}.png`;
+#searchbar {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+    width: 60%;
+    max-width: 500px;
+    padding: 15px;
+    border-radius: 30px;
+    border: 2px solid #ddd;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1.1rem;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-        evoHTML += `
-            <div style="text-align:center;">
-                <img src="${evoImage}" class="evo-img">
-                <p>${evoName}</p>
-            </div>
-            ${current.evolves_to.length > 0 ? '<span>➡️</span>' : ''} 
-        `;
+}
 
-        current = current.evolves_to[0];
-    } while (current && current.hasOwnProperty('evolves_to'));
+#searchBar:focus {
+    border-color: #ef5350;
+    box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+}
 
-    document.getElementById('evolution-chain').innerHTML = evoHTML;
-};
+#control-panel {
+    margin: bottom 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: #3b4cca;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'rubik', sans-serif;
+    transition: transform 0.2s;
+}
 
-
-const closeModal = () => {
-    modal.classList.remove('visible');
-};
-
-
-window.onclick = (event) => {
-    if (event.target == modal) {
-        closeModal();
-    }
-};
-
-
-const fetchItems = () => {
-
-    pokemon = [];
-   showLoading();
-
-    const promises = [];
-
-
-    for (let i = 1; i <= 100; i++) {
-        const url = `https://pokeapi.co/api/v2/item/${i}`;
-        promises.push(fetch(url).then((res) => res.json()));
-    }
-
-    Promise.all(promises).then((results) => {
-        const items = results.map((data) => ({
-            name: data.name,
-            id: data.id,
-            image: data.sprites.default,
-
-            effect: data.effect_entries.find(e => e.language.name === 'en')?.short_effect || "No description available."
-        }));
-
-        displayItems(items);
-    });
-};
-
-const displayItems = (itemList) => {
-    const itemHTMLString = itemList.map((item) => `
-        <li class="card" style="min-height: 250px;"> <img class="card-image" src="${item.image}" style="width:80px; height:80px; margin-top:20px;"/>
-            <h2 class="card-title">${item.id}. ${item.name}</h2>
-            <p class="card-subtitle" style="font-size:12px; padding: 0 10px; color:#555;">
-                ${item.effect}
-            </p>
-        </li>
-    `).join('');
-
-    pokedex.innerHTML = itemHTMLString;
-};
-
-const toggleShiny = () => {
-
-    isShinyMode = !isShinyMode;
+.gen-btn button {
+    background-color: #3b4cca;
+    color: white;
+    padding: 14px 23px;
+    font-size: auto;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'rubik', sans-serif;
+    font-weight: bold;
+    margin: 5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
 
-    displaypokemon(pokemon);
-};
+.gen-btn button:hover {
+    background-color: #fc0;
+    color: black;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+}
+
+.gen-btn button.active {
+    background-color: #fc0;
+    color: black;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+}
+
+.gmax-btn {
+    background-color: #cc0000;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'rubik', sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.gmax-btn:hover {
+    background-color: #ff0000;
+    transform: scale(1.05);
+}
 
 
-const displaypokemon = (pokemonlist) => {
-    if (!pokemonlist) return;
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
 
-    const pokemonhtmlstring = pokemonlist.map((pokemun) => {
-
-
-        const sprite = (isShinyMode && pokemun.shiny) ? pokemun.shiny : pokemun.image;
-
-        return `
-        <li class="card" onclick="openModal(${pokemun.id})">
-            <img class="card-image" src="${sprite}"/>
-            <h2 class="card-title">${pokemun.id}. ${pokemun.name}</h2>
-            <p class="card-subtitle">Type: ${pokemun.type}</p>
-            <p class="card-subtitle" style="font-size: 12px; color: #ddd;">
-                ${pokemun.weight} | ${pokemun.height}
-            </p>
-        </li>
-        `;
-    }).join('');
-
-    pokedex.innerHTML = pokemonhtmlstring;
-};
-
-fetchpokemon(1, 51);
+.modal.visible {
+    opacity: 1;
+    pointer-events: all;
+}
 
 
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 203, 5, 0.5);
+}
 
 
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+}
 
+.close-btn:hover {
+    color: red;
+}
+
+#modal-img {
+    width: 150px;
+}
+
+#modal-name {
+    text-transform: capitalize;
+    margin: 10px 0;
+    font-family: 'Rubik', sans-serif;
+}
+
+
+.evo-flex {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.evo-img {
+    width: 60px;
+    height: 60px;
+}
+
+.item-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Rubik', sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin-left: 10px;
+}
+
+.item-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.shiny-btn {
+    background-color: #FFD700;
+    /* Gold */
+    color: #333;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Rubik', sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin-left: 10px;
+    border: 2px solid #DAA520;
+}
+
+.shiny-btn:hover {
+    background-color: #ffe44d;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #FFD700;
+}
+
+.cry-btn {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+
+.cry-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.cry-btn:active {
+    transform: scale(0.95);
+}
 
