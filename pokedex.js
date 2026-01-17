@@ -1,16 +1,13 @@
-// 1. SELECT DOM ELEMENTS & INITIALIZE VARIABLES
+
 const pokedex = document.getElementById('pokedex');
 const searchbar = document.getElementById('searchbar');
 let pokemon = [];
 let allGenData = [];
 
-// --- THESE WERE MISSING AND CAUSING THE BLANK SCREEN ---
 let isShinyMode = false;
 let isItemMode = false; 
 let loadedItems = []; 
-// -------------------------------------------------------
 
-// 2. LOADING ANIMATION FUNCTION
 const showLoading = () => {
     const loadingHTML = `
         <div class="loader-container">
@@ -20,7 +17,6 @@ const showLoading = () => {
     pokedex.innerHTML = loadingHTML;
 };
 
-// 3. FETCH GLOBAL DATA (For Search)
 const initGlobalSearch = async () => {
     const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
     const data = await res.json();
@@ -28,11 +24,10 @@ const initGlobalSearch = async () => {
 };
 initGlobalSearch();
 
-// 4. SEARCH BAR LOGIC (With Animation)
+
 searchbar.addEventListener('keyup', (e) => {
     const searchString = e.target.value.toLowerCase();
 
-    // A. Item Search Mode
     if (isItemMode) {
         if(loadedItems.length > 0) {
             const filteredItems = loadedItems.filter(item => 
@@ -43,16 +38,13 @@ searchbar.addEventListener('keyup', (e) => {
         return; 
     }
 
-    // B. Empty Search -> Reset
     if (searchString === '') {
         fetchpokemon(1, 50);
         return;
     }
 
-    // C. Running Pikachu Animation
     showLoading();
 
-    // D. Execute Search (with small delay for animation)
     setTimeout(() => {
         const matchNames = allGenData.filter(p => p.name.includes(searchString));
         const topMatches = matchNames.slice(0, 10);
@@ -77,7 +69,6 @@ searchbar.addEventListener('keyup', (e) => {
     }, 500);
 });
 
-// 5. MAIN FETCH FUNCTION
 const fetchpokemon = (start, end) => {
     isItemMode = false;
     pokemon = [];
@@ -106,7 +97,6 @@ const fetchpokemon = (start, end) => {
     });
 };
 
-// 6. GENERATION BUTTONS
 const genbuttons = document.querySelectorAll('.gen-btn button');
 genbuttons.forEach(button => {
     button.addEventListener('click', function () {
@@ -118,7 +108,6 @@ if (genbuttons.length > 0) {
     genbuttons[0].classList.add('active');
 }
 
-// 7. MODAL (POPUP) LOGIC
 const modal = document.getElementById('modal');
 
 const openModal = async (id) => {
@@ -130,8 +119,7 @@ const openModal = async (id) => {
 
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await res.json();
-    
-    // Check Shiny Mode for Modal Image
+
     const modalImage = (isShinyMode && data.sprites.other['official-artwork'].front_shiny)
         ? data.sprites.other['official-artwork'].front_shiny
         : data.sprites.other['official-artwork'].front_default;
@@ -140,7 +128,6 @@ const openModal = async (id) => {
     document.getElementById('modal-name').innerText = data.name;
     document.getElementById('modal-height-weight').innerText = `Height: ${data.height / 10}m | Weight: ${data.weight / 10}kg`;
 
-    // Audio / Cry
     const cryURL = data.cries.latest;
     if (cryURL) {
         const audio = new Audio(cryURL);
@@ -156,13 +143,11 @@ const openModal = async (id) => {
         if(cryBtn) cryBtn.style.display = "none";
     }
 
-    // Stats
     const statsHTML = data.stats.map(s =>
         `<p>${s.stat.name}: <b>${s.base_stat}</b></p>`
     ).join('');
     document.getElementById('modal-stats-content').innerHTML = statsHTML;
 
-    // Evolution Chain
     const speciesRes = await fetch(data.species.url);
     const speciesData = await speciesRes.json();
     const evoRes = await fetch(speciesData.evolution_chain.url);
@@ -199,9 +184,8 @@ window.onclick = (event) => {
     }
 };
 
-// 8. ITEM FETCHING
 const fetchItems = () => {
-    isItemMode = true; // Works now because variable is declared at top
+    isItemMode = true; 
     pokemon = [];
     showLoading();
 
@@ -219,7 +203,7 @@ const fetchItems = () => {
             effect: data.effect_entries.find(e => e.language.name === 'en')?.short_effect || "No description available."
         }));
         
-        loadedItems = items; // Save items for search
+        loadedItems = items; 
         displayItems(items);
     });
 };
@@ -237,13 +221,11 @@ const displayItems = (itemList) => {
     pokedex.innerHTML = itemHTMLString;
 };
 
-// 9. TOGGLE SHINY
 const toggleShiny = () => {
     isShinyMode = !isShinyMode;
     displaypokemon(pokemon);
 };
 
-// 10. DISPLAY POKEMON
 const displaypokemon = (pokemonlist) => {
     if (!pokemonlist) return;
 
@@ -265,6 +247,6 @@ const displaypokemon = (pokemonlist) => {
     pokedex.innerHTML = pokemonhtmlstring;
 };
 
-// 11. START APP
 fetchpokemon(1, 51);
+
 
