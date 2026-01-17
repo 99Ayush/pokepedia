@@ -3,8 +3,8 @@ const searchbar = document.getElementById('searchbar');
 let pokemon = [];
 let allGenData = [];
 let isShinyMode = false;
-let isItemMode = false; 
-let loadedItems = []; 
+let isItemMode = false;
+let loadedItems = [];
 
 const showLoading = () => {
     const loadingHTML = `
@@ -19,7 +19,7 @@ const initGlobalSearch = async () => {
     try {
         const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
         const data = await res.json();
-        allGenData = data.results; 
+        allGenData = data.results;
     } catch (error) {
         console.error("Failed to load global search data:", error);
     }
@@ -31,12 +31,12 @@ searchbar.addEventListener('keyup', (e) => {
 
     if (isItemMode) {
         if(loadedItems.length > 0) {
-            const filteredItems = loadedItems.filter(item => 
+            const filteredItems = loadedItems.filter(item =>
                 item.name.toLowerCase().includes(searchString)
             );
             displayItems(filteredItems);
         }
-        return; 
+        return;
     }
 
     if (searchString === '') {
@@ -121,7 +121,7 @@ const openModal = async (id) => {
 
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await res.json();
-    
+
     const modalImage = (isShinyMode && data.sprites.other['official-artwork'].front_shiny)
         ? data.sprites.other['official-artwork'].front_shiny
         : data.sprites.other['official-artwork'].front_default;
@@ -203,15 +203,15 @@ const fetchItems = () => {
             image: data.sprites.default,
             effect: data.effect_entries.find(e => e.language.name === 'en')?.short_effect || "No description available."
         }));
-        
-        loadedItems = items; 
+
+        loadedItems = items;
         displayItems(items);
     });
 };
 
 const displayItems = (itemList) => {
     const itemHTMLString = itemList.map((item) => `
-        <li class="card" style="min-height: 250px;"> 
+        <li class="card" style="min-height: 250px;">
             <img class="card-image" src="${item.image}" style="width:80px; height:80px; margin-top:20px;"/>
             <h2 class="card-title">${item.id}. ${item.name}</h2>
             <p class="card-subtitle" style="font-size:12px; padding: 0 10px; color:#555;">
@@ -248,4 +248,4 @@ const displaypokemon = (pokemonlist) => {
     pokedex.innerHTML = pokemonhtmlstring;
 };
 
-fetchpokemon(1, 50);
+fetchpokemon(1, 51);
