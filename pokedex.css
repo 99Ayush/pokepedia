@@ -40,17 +40,28 @@ body {
 
 #control-panel {
     margin-bottom: 30px;
+    padding: 10px 15px;
     text-align: center;
+}
+
+.gen-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.special-container {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px 15px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 #searchbar {
     display: block;
-    margin: 15px auto 30px auto;
+    margin: 0 auto;
     width: 60%;
     max-width: 500px;
     padding: 15px;
@@ -76,7 +87,6 @@ body {
     cursor: pointer;
     font-family: 'Rubik', sans-serif;
     font-weight: bold;
-    margin: 5px;
     transition: all 0.2s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -95,7 +105,6 @@ body {
     font-weight: bold;
     font-family: 'Rubik', sans-serif;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    margin: 5px;
     color: white; 
 }
 
@@ -103,9 +112,9 @@ body {
     background-color: #ff5555;
 }
 
-.shiny-btn { 
-    background-color: #FFD700; 
-    color: #333; 
+.shiny-btn {
+    background-color: #FFD700;
+    color: #333;
     border: 2px solid #DAA520;
 }
 
@@ -115,8 +124,8 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     list-style: none;
-    margin: 0 auto;
     max-width: 1200px;
+    margin: 0 auto;
 }
 
 .card {
@@ -189,7 +198,6 @@ body {
 .evo-flex {
     display: flex;
     justify-content: center;
-    align-items: center;
     gap: 10px;
     flex-wrap: wrap;
 }
