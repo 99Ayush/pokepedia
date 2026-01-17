@@ -1,9 +1,7 @@
-
 const pokedex = document.getElementById('pokedex');
 const searchbar = document.getElementById('searchbar');
 let pokemon = [];
 let allGenData = [];
-
 let isShinyMode = false;
 let isItemMode = false; 
 let loadedItems = []; 
@@ -16,41 +14,17 @@ const showLoading = () => {
     `;
     pokedex.innerHTML = loadingHTML;
 };
-const fetchpokemon = (start, end) => {
-    isItemMode = false;
-    pokemon = [];
-    showLoading();
-
-    const promises = [];
-    for (let i = start; i <= end; i++) {
-        const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
-        promises.push(fetch(url).then((res) => res.json()));
-    };
-
-    Promise.all(promises).then((results) => {
-        pokemon = results.map((data) => ({
-            name: data.name,
-            id: data.id,
-            base_experience: data.base_experience,
-            weight: `${data.weight / 10} kg`,
-            height: `${data.height / 10} m`,
-            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
-            shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
-            stat: data.stats.map((stat) => `${stat.stat.name}: ${stat.base_stat}`).join(', '),
-            type: data.types.map((type) => type.type.name).join(', '),
-            abilities: data.abilities.map((abilities) => abilities.ability.name).join(', ')
-        }));
-        displaypokemon(pokemon);
-    });
-};
 
 const initGlobalSearch = async () => {
-    const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
-    const data = await res.json();
-    allGenData = data.results; 
+    try {
+        const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10000');
+        const data = await res.json();
+        allGenData = data.results; 
+    } catch (error) {
+        console.error("Failed to load global search data:", error);
+    }
 };
 initGlobalSearch();
-
 
 searchbar.addEventListener('keyup', (e) => {
     const searchString = e.target.value.toLowerCase();
@@ -96,6 +70,33 @@ searchbar.addEventListener('keyup', (e) => {
     }, 500);
 });
 
+const fetchpokemon = (start, end) => {
+    isItemMode = false;
+    pokemon = [];
+    showLoading();
+
+    const promises = [];
+    for (let i = start; i <= end; i++) {
+        const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
+        promises.push(fetch(url).then((res) => res.json()));
+    };
+
+    Promise.all(promises).then((results) => {
+        pokemon = results.map((data) => ({
+            name: data.name,
+            id: data.id,
+            base_experience: data.base_experience,
+            weight: `${data.weight / 10} kg`,
+            height: `${data.height / 10} m`,
+            image: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+            shiny: data.sprites.other['official-artwork'].front_shiny || data.sprites.front_shiny,
+            stat: data.stats.map((stat) => `${stat.stat.name}: ${stat.base_stat}`).join(', '),
+            type: data.types.map((type) => type.type.name).join(', '),
+            abilities: data.abilities.map((abilities) => abilities.ability.name).join(', ')
+        }));
+        displaypokemon(pokemon);
+    });
+};
 
 const genbuttons = document.querySelectorAll('.gen-btn button');
 genbuttons.forEach(button => {
@@ -111,6 +112,7 @@ if (genbuttons.length > 0) {
 const modal = document.getElementById('modal');
 
 const openModal = async (id) => {
+    if(!modal) return;
     modal.classList.add('visible');
     document.getElementById('modal-name').innerText = "Loading...";
     document.getElementById('modal-img').src = "";
@@ -119,7 +121,7 @@ const openModal = async (id) => {
 
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await res.json();
-
+    
     const modalImage = (isShinyMode && data.sprites.other['official-artwork'].front_shiny)
         ? data.sprites.other['official-artwork'].front_shiny
         : data.sprites.other['official-artwork'].front_default;
@@ -129,17 +131,16 @@ const openModal = async (id) => {
     document.getElementById('modal-height-weight').innerText = `Height: ${data.height / 10}m | Weight: ${data.weight / 10}kg`;
 
     const cryURL = data.cries.latest;
+    const cryBtn = document.getElementById('play-cry-btn');
     if (cryURL) {
         const audio = new Audio(cryURL);
         audio.volume = 0.2;
         audio.play();
-        const cryBtn = document.getElementById('play-cry-btn');
         if(cryBtn) {
             cryBtn.onclick = () => audio.play();
             cryBtn.style.display = "inline-block";
         }
     } else {
-        const cryBtn = document.getElementById('play-cry-btn');
         if(cryBtn) cryBtn.style.display = "none";
     }
 
@@ -175,7 +176,7 @@ const openModal = async (id) => {
 };
 
 const closeModal = () => {
-    modal.classList.remove('visible');
+    if(modal) modal.classList.remove('visible');
 };
 
 window.onclick = (event) => {
@@ -185,7 +186,7 @@ window.onclick = (event) => {
 };
 
 const fetchItems = () => {
-    isItemMode = true; 
+    isItemMode = true;
     pokemon = [];
     showLoading();
 
@@ -247,7 +248,4 @@ const displaypokemon = (pokemonlist) => {
     pokedex.innerHTML = pokemonhtmlstring;
 };
 
-fetchpokemon(1, 51);
-
-
-
+fetchpokemon(1, 50);
