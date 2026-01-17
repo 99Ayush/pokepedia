@@ -121,7 +121,7 @@ const openModal = async (id) => {
 
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await res.json();
-
+    
     const modalImage = (isShinyMode && data.sprites.other['official-artwork'].front_shiny)
         ? data.sprites.other['official-artwork'].front_shiny
         : data.sprites.other['official-artwork'].front_default;
@@ -203,8 +203,8 @@ const fetchItems = () => {
             image: data.sprites.default,
             effect: data.effect_entries.find(e => e.language.name === 'en')?.short_effect || "No description available."
         }));
-
-        loadedItems = items;
+        
+        loadedItems = items; 
         displayItems(items);
     });
 };
@@ -212,40 +212,3 @@ const fetchItems = () => {
 const displayItems = (itemList) => {
     const itemHTMLString = itemList.map((item) => `
         <li class="card" style="min-height: 250px;">
-            <img class="card-image" src="${item.image}" style="width:80px; height:80px; margin-top:20px;"/>
-            <h2 class="card-title">${item.id}. ${item.name}</h2>
-            <p class="card-subtitle" style="font-size:12px; padding: 0 10px; color:#555;">
-                ${item.effect}
-            </p>
-        </li>
-    `).join('');
-    pokedex.innerHTML = itemHTMLString;
-};
-
-const toggleShiny = () => {
-    isShinyMode = !isShinyMode;
-    displaypokemon(pokemon);
-};
-
-const displaypokemon = (pokemonlist) => {
-    if (!pokemonlist) return;
-
-    const pokemonhtmlstring = pokemonlist.map((pokemun) => {
-        const sprite = (isShinyMode && pokemun.shiny) ? pokemun.shiny : pokemun.image;
-
-        return `
-        <li class="card" onclick="openModal(${pokemun.id})">
-            <img class="card-image" src="${sprite}" loading="lazy"/>
-            <h2 class="card-title">${pokemun.id}. ${pokemun.name}</h2>
-            <p class="card-subtitle">Type: ${pokemun.type}</p>
-            <p class="card-subtitle" style="font-size: 12px; color: #ddd;">
-                ${pokemun.weight} | ${pokemun.height}
-            </p>
-        </li>
-        `;
-    }).join('');
-
-    pokedex.innerHTML = pokemonhtmlstring;
-};
-
-fetchpokemon(1, 51);
