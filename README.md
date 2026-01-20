@@ -1,4 +1,4 @@
-# Pokedex App
+# Pokedex App 
 
 A dynamic Pokedex web application built with vanilla JavaScript and the PokeAPI.
 
