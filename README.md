@@ -1,5 +1,5 @@
 # Pokedex App 
-
+  
 A dynamic Pokedex web application built with vanilla JavaScript and the PokeAPI.
 
 🚀 **[View Live Demo](https://pokepedia-tan.vercel.app/)**
