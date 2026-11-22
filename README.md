@@ -20,6 +20,8 @@ Pokepedia is a browser Pokédex built on **raw DOM APIs and the PokeAPI**. Frame
 
 The whole application is `index.html`, `pokedex.css`, and `pokedex.js`.
 
+![Pokepedia showing Generation 1 with generation jump buttons, items bag and shiny mode](docs/screenshots/pokedex.png)
+
 ## Features
 
 | Feature | What it does |
