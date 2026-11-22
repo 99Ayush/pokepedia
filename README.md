@@ -5,6 +5,7 @@
 **A complete Pokédex in three files — no framework, no bundler, no dependencies.**
 
 [![Live Demo](https://img.shields.io/badge/live-demo-f23c2f?style=for-the-badge&logo=vercel&logoColor=white)](https://pokepedia-tan.vercel.app)
+[![CI](https://github.com/99Ayush/pokepedia/actions/workflows/ci.yml/badge.svg)](https://github.com/99Ayush/pokepedia/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=for-the-badge)](LICENSE)
 [![Vanilla JS](https://img.shields.io/badge/vanilla-JS-f7df1e?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Powered by PokeAPI](https://img.shields.io/badge/data-PokeAPI-3b4cca?style=for-the-badge)](https://pokeapi.co)

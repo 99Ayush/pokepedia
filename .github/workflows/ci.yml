@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sanity:
+    name: Syntax and asset check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript parses
+        run: node --check pokedex.js
+
+      - name: Referenced files exist
+        run: |
+          test -f index.html
+          test -f pokedex.css
+          grep -q 'pokedex.js' index.html
+          grep -q 'pokedex.css' index.html
+
+      - name: No stray secrets in source
+        run: |
+          if grep -rInE 'sk-[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{30,}|xai-[A-Za-z0-9]{20,}' --include='*.js' --include='*.html' .; then
+            echo "Potential credential found"; exit 1
+          fi
+          echo "clean"
