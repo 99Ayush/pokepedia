@@ -1,50 +1,70 @@
-# Pokepedia
+<div align="center">
 
-**A Pokedex built in vanilla JavaScript — no framework, no build step, no shortcuts.**
+# 🔴 Pokepedia
 
-> 🔗 **Live:** [pokepedia-tan.vercel.app](https://pokepedia-tan.vercel.app)
+**A complete Pokédex in three files — no framework, no bundler, no dependencies.**
 
-I built this deliberately without React. Frameworks hide the parts that break in production — DOM updates, request caching, race conditions between searches, and state that has to live in plain variables. Doing it by hand was the point.
+[![Live Demo](https://img.shields.io/badge/live-demo-f23c2f?style=for-the-badge&logo=vercel&logoColor=white)](https://pokepedia-tan.vercel.app)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=for-the-badge)](LICENSE)
+[![Vanilla JS](https://img.shields.io/badge/vanilla-JS-f7df1e?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Powered by PokeAPI](https://img.shields.io/badge/data-PokeAPI-3b4cca?style=for-the-badge)](https://pokeapi.co)
+
+[Live app](https://pokepedia-tan.vercel.app) · [Report a bug](https://github.com/99Ayush/pokepedia/issues)
+
+</div>
 
 ---
+
+Pokepedia is a browser Pokédex built on **raw DOM APIs and the PokeAPI**. Frameworks hide exactly the parts that break in production — request orchestration, list rendering, modal state, and what happens when a user types faster than the network replies. Building it by hand was the point.
+
+The whole application is `index.html`, `pokedex.css`, and `pokedex.js`.
 
 ## Features
 
-- **Search** by name or Pokedex ID, with debounced input and stale-response guarding so fast typing never renders an old result.
-- **Filters** by type, generation and held item.
-- **Shiny mode** — swap every sprite to its shiny variant.
-- **Sound effects** using the browser's audio API.
-- **Detail views** — base stats rendered as bars, evolution chains, and Mega forms.
-- **"Who's That Pokémon?"** — a guessing game built on the same data layer.
-- **Client-side caching** so repeat views of the same Pokémon never re-hit the API.
+| Feature | What it does |
+| :--- | :--- |
+| **Generation browsing** | Nine quick-jump buttons load every Pokémon from Gen 1 through Gen 9 in one batched request pass |
+| **Global search** | Fetches the full Pokémon index once at startup, then resolves only the closest name matches on each keystroke |
+| **Items Bag** | Switches the entire grid into item mode, searching and rendering items from the same API |
+| **Shiny mode** | Toggles every sprite — grid and modal — to its shiny artwork in one render pass |
+| **Detail modal** | Official artwork, height and weight, base stats as proportional bars, and the full evolution chain |
+| **Cry playback** | Streams the Pokémon's cry from the API through a single `Audio` instance |
+| **Responsive layout** | One grid that reflows from desktop to phone with no CSS framework |
 
----
+## How it works
 
-## Architecture
-
-Three concerns, kept separate on purpose:
-
+```text
+app boot
+   │
+   ├── prefetch name index ─────────────► /pokemon?limit=10000
+   │
+   ├── generation button ───────────────► 1 fetch per Pokémon in range (batched with Promise.all)
+   │
+   ├── keystroke ───────────────────────► filter local index → resolve top 10 → render
+   │
+   └── card click ──────────────────────► detail fetch → stats, evolution chain, cry
 ```
-index.html
-├── css/          Layout, type-colour system, responsive grid
-├── js/
-│   ├── api.js      PokeAPI client: fetch, cache, normalise
-│   ├── search.js   Debounce, filter state, render pipeline
-│   ├── detail.js   Stats bars, evolution chain, forms
-│   └── game.js     "Who's That Pokémon" state machine
-└── assets/       Sprites and audio
+
+Two details worth calling out:
+
+- **The name index is loaded once**, not per keystroke. Typing filters an in-memory array and only the top ten matches hit the network.
+- **Detail views fetch independently of the grid**, so opening a Pokémon never re-downloads the list.
+
+## Project layout
+
+```text
+pokepedia/
+├── index.html     Markup, generation controls, modal shell
+├── pokedex.css    Design tokens, card grid, modal, responsive rules
+├── pokedex.js     Data layer, search, rendering, modal, items, shiny state
+└── LICENSE
 ```
 
-The cache is a plain `Map` keyed by Pokémon identifier — the same object is reused for the grid, the detail modal and the guessing game, so a Pokémon is fetched at most once per session.
-
----
-
-## Stack
-
-- HTML5, CSS3 (custom properties for the type-colour system), ES6+ JavaScript
-- [PokeAPI](https://pokeapi.co/) — no wrapper library
+There is no `package.json` and no build step. `pokedex.js` is loaded with a cache-busting query string so a deploy always ships the new bundle.
 
 ## Run locally
+
+Any static file server works:
 
 ```bash
 git clone https://github.com/99Ayush/pokepedia.git
@@ -52,8 +72,15 @@ cd pokepedia
 npx serve .
 ```
 
-No install step and no dependencies — open it and it works.
+Or skip the server entirely and open `index.html` — it is a single page talking to a public API. No API key, no environment variables, no install.
+
+## Notes and limits
+
+- Data comes live from [PokeAPI](https://pokeapi.co), so the app is only as fresh as their dataset.
+- Generation ranges are hardcoded (`1–151`, `152–251`, …) because the API exposes ranges, not a generation field.
+- Items Bag loads the first 100 items rather than paging the full catalogue — enough to demonstrate the mode without hammering the API.
+- No offline cache. Reopening the tab re-fetches.
 
 ## License
 
-MIT
+[MIT](LICENSE) · built by [Ayush Kumar](https://github.com/99Ayush)
